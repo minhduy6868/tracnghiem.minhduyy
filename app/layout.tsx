@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    url: "https://tracnghiem.minhduyy.netlify.app",
+    url: "https://tracnghiem-minhduyy.netlify.app",
     title: "Minh Duyy - Hệ thống tạo trắc nghiệm thông minh với AI",
     description:
       "Tạo trắc nghiệm online miễn phí với AI thông minh. Phân tích văn bản tự động, tạo đề thi, ôn tập kiến thức dễ dàng.",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
   alternates: {
-    canonical: "https://tracnghiem.minhduyy.netlify.app",
+    canonical: "https://tracnghiem-minhduyy.netlify.app",
   },
   robots: {
     index: true,
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  metadataBase: new URL("https://tracnghiem.minhduyy.netlify.app"),
+  metadataBase: new URL("https://tracnghiem-minhduyy.netlify.app"),
     generator: 'v0.dev'
 }
 
@@ -78,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "Minh Duyy - Hệ thống tạo trắc nghiệm thông minh với AI",
-              url: "https://tracnghiem.minhduyy.netlify.app",
+              url: "https://tracnghiem-minhduyy.netlify.app",
               description:
                 "Tạo trắc nghiệm online miễn phí với AI thông minh. Phân tích văn bản tự động, tạo đề thi, ôn tập kiến thức dễ dàng.",
               applicationCategory: "EducationalApplication",
