@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "Trắc nghiệm cùng Duy",
     images: [
       {
-        url: "/og-image.png",
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "Trắc nghiệm cùng Duy",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     title: "Trắc nghiệm cùng Duy - Hệ thống tạo trắc nghiệm thông minh với AI",
     description:
       "Tạo trắc nghiệm online miễn phí với AI thông minh. Phân tích văn bản tự động, tạo đề thi, ôn tập kiến thức dễ dàng.",
-    images: ["/og-image.png"],
+    images: ["/logo.png"],
   },
   alternates: {
     canonical: "https://tracnghiemcungminhduyy.netlify.app",
