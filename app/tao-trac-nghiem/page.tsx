@@ -7,11 +7,11 @@ import Features from "@/components/features"
 import SEOFooter from "@/components/seo-footer"
 
 export const metadata: Metadata = {
-  title: "Tạo Trắc Nghiệm Online Thông Minh | Minh Duyy",
+  title: "Tạo Trắc Nghiệm Online Thông Minh | MinhDuyy",
   description:
     "Công cụ tạo trắc nghiệm online thông minh với AI. Chuyển đổi văn bản thành bài kiểm tra trắc nghiệm chỉ trong vài giây.",
   keywords:
-    "tạo trắc nghiệm, tạo trắc nghiệm online, công cụ tạo trắc nghiệm, tạo đề thi trắc nghiệm, Minh Duyy, trắc nghiệm thông minh",
+    "tạo trắc nghiệm, tạo trắc nghiệm online, công cụ tạo trắc nghiệm, tạo đề thi trắc nghiệm, minhduyy, trắc nghiệm thông minh",
 }
 
 export default function TaoTracNghiemPage() {
@@ -50,8 +50,9 @@ export default function TaoTracNghiemPage() {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-8">Cách tạo trắc nghiệm online</h2>
             <p className="text-lg text-gray-700 mb-6">
-              Tạo trắc nghiệm online với Minh Duyy vô cùng đơn giản và nhanh chóng. Chỉ với vài bước đơn giản, bạn đã có
+              Tạo trắc nghiệm online với MinhDuyy vô cùng đơn giản và nhanh chóng. Chỉ với vài bước đơn giản, bạn đã có
               thể tạo ra một bài kiểm tra trắc nghiệm chuyên nghiệp.
+              Nhớ XUỐNG DÒNG NHA CÁC FEN!!!
             </p>
 
             <div className="my-10" id="huong-dan">
@@ -164,7 +165,7 @@ export default function TaoTracNghiemPage() {
             <div className="my-10">
               <h3 className="text-2xl font-bold mb-6">Định dạng văn bản được hỗ trợ</h3>
               <p className="text-lg text-gray-700 mb-6">
-                Hệ thống Minh Duyy Trắc Nghiệm hỗ trợ nhiều định dạng văn bản khác nhau để tạo trắc nghiệm:
+                Hệ thống MinhDuyy Trắc Nghiệm hỗ trợ nhiều định dạng văn bản khác nhau để tạo trắc nghiệm:
               </p>
               <div className="bg-gray-100 p-6 rounded-lg">
                 <h4 className="font-semibold mb-4">Ví dụ định dạng văn bản:</h4>

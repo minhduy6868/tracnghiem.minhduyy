@@ -7,11 +7,11 @@ import Features from "@/components/features"
 import SEOFooter from "@/components/seo-footer"
 
 export const metadata: Metadata = {
-  title: "Trắc nghiệm Online Miễn Phí | Minh Duyy",
+  title: "Trắc nghiệm Online Miễn Phí | MinhDuyy",
   description:
-    "Tạo và làm trắc nghiệm online miễn phí với Minh Duyy. Hệ thống trắc nghiệm thông minh với AI giúp học tập hiệu quả.",
+    "Tạo và làm trắc nghiệm online miễn phí với MinhDuyy. Hệ thống trắc nghiệm thông minh với AI giúp học tập hiệu quả.",
   keywords:
-    "trắc nghiệm online, trắc nghiệm miễn phí, làm trắc nghiệm, thi trắc nghiệm, Minh Duyy, trắc nghiệm thông minh",
+    "trắc nghiệm online, trắc nghiệm miễn phí, làm trắc nghiệm, thi trắc nghiệm, minhduyy, trắc nghiệm thông minh",
 }
 
 export default function TracNghiemOnlinePage() {
@@ -56,7 +56,7 @@ export default function TracNghiemOnlinePage() {
               điện tử như máy tính, điện thoại, máy tính bảng.
             </p>
             <p className="text-lg text-gray-700 mb-6">
-              Với hệ thống trắc nghiệm online Minh Duyy, việc tạo và làm bài trắc nghiệm trở nên đơn giản và hiệu quả hơn
+              Với hệ thống trắc nghiệm online MinhDuyy, việc tạo và làm bài trắc nghiệm trở nên đơn giản và hiệu quả hơn
               bao giờ hết. Chúng tôi cung cấp công cụ tạo trắc nghiệm thông minh với AI, giúp chuyển đổi văn bản thành
               bài kiểm tra trắc nghiệm chỉ trong vài giây.
             </p>
@@ -121,9 +121,9 @@ export default function TracNghiemOnlinePage() {
             </div>
 
             <div className="my-10">
-              <h3 className="text-2xl font-bold mb-6">Tại sao chọn Minh Duyy Trắc Nghiệm?</h3>
+              <h3 className="text-2xl font-bold mb-6">Tại sao chọn MinhDuyy Trắc Nghiệm?</h3>
               <p className="text-lg text-gray-700 mb-6">
-                Minh Duyy Trắc Nghiệm là hệ thống trắc nghiệm thông minh được phát triển bởi đội ngũ chuyên gia giáo dục
+                MinhDuyy Trắc Nghiệm là hệ thống trắc nghiệm thông minh được phát triển bởi đội ngũ chuyên gia giáo dục
                 và công nghệ hàng đầu Việt Nam. Chúng tôi cung cấp giải pháp toàn diện cho việc tạo, quản lý và thực
                 hiện bài kiểm tra trắc nghiệm online.
               </p>
@@ -133,7 +133,7 @@ export default function TracNghiemOnlinePage() {
                 vào việc giảng dạy.
               </p>
               <p className="text-lg text-gray-700">
-                Đặc biệt, Minh Duyy Trắc Nghiệm hoàn toàn miễn phí và không giới hạn số lượng câu hỏi, bài kiểm tra. Đây
+                Đặc biệt, MinhDuyy Trắc Nghiệm hoàn toàn miễn phí và không giới hạn số lượng câu hỏi, bài kiểm tra. Đây
                 là công cụ lý tưởng cho giáo viên, học sinh và sinh viên muốn nâng cao hiệu quả dạy và học.
               </p>
             </div>

@@ -14,6 +14,8 @@ import QuizResults from "@/components/quiz-results"
 import SEOFooter from "@/components/seo-footer"
 import Testimonials from "@/components/testimonials"
 import Features from "@/components/features"
+import { useLanguage } from "@/lib/i18n/language-context"
+import * as mammoth from "mammoth"
 
 export interface Question {
   id: number
@@ -29,6 +31,7 @@ export interface Question {
 }
 
 export default function HomePage() {
+  const { t } = useLanguage()
   const [currentStep, setCurrentStep] = useState<"input" | "review" | "quiz" | "results">("input")
   const [inputText, setInputText] = useState("")
   const [questions, setQuestions] = useState<Question[]>([])
@@ -36,19 +39,60 @@ export default function HomePage() {
   const { toast } = useToast()
   const [quizMode, setQuizMode] = useState<"exam" | "practice" | null>(null)
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file && file.type === "text/plain") {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const content = e.target?.result as string
-        setInputText(content)
+    if (!file) return
+
+    try {
+      let content = ""
+
+      // Xử lý file dựa trên loại
+      if (file.type === "text/plain") {
+        // Xử lý file .txt
+        const reader = new FileReader()
+        content = await new Promise((resolve) => {
+          reader.onload = (e) => resolve((e.target?.result as string) || "")
+          reader.readAsText(file)
+        })
+      } else if (
+        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+        file.name.endsWith(".docx")
+      ) {
+        // Xử lý file .docx
+        const arrayBuffer = await file.arrayBuffer()
+        const result = await mammoth.extractRawText({ arrayBuffer })
+        content = result.value
+      } else if (file.type === "application/msword" || file.name.endsWith(".doc")) {
+        // Xử lý file .doc - cần chuyển đổi trên server
+        const formData = new FormData()
+        formData.append("file", file)
+
+        const response = await fetch("/api/convert-doc", {
+          method: "POST",
+          body: formData,
+        })
+
+        if (!response.ok) {
+          throw new Error("Không thể chuyển đổi file .doc")
+        }
+
+        const data = await response.json()
+        content = data.text || ""
+      } else {
+        toast({
+          title: t("fileTypeError"),
+          description: t("supportedFormats"),
+          variant: "destructive",
+        })
+        return
       }
-      reader.readAsText(file)
-    } else {
+
+      setInputText(content)
+    } catch (error) {
+      console.error("Lỗi khi đọc file:", error)
       toast({
-        title: "Lỗi",
-        description: "Vui lòng chọn file .txt",
+        title: t("fileReadError"),
+        description: t("tryAgain"),
         variant: "destructive",
       })
     }
@@ -57,8 +101,7 @@ export default function HomePage() {
   const processQuestions = async () => {
     if (!inputText.trim()) {
       toast({
-        title: "Lỗi",
-        description: "Vui lòng nhập văn bản chứa câu hỏi",
+        title: t("inputError"),
         variant: "destructive",
       })
       return
@@ -75,21 +118,25 @@ export default function HomePage() {
       })
 
       if (!response.ok) {
-        throw new Error("Lỗi xử lý câu hỏi")
+        const errorData = await response.json()
+        throw new Error(errorData.error || t("processingError"))
       }
 
       const data = await response.json()
+      if (!data.questions || data.questions.length === 0) {
+        throw new Error(t("noQuestionsFound"))
+      }
+
       setQuestions(data.questions)
       setCurrentStep("review")
 
       toast({
-        title: "Thành công",
-        description: `Đã phân tích ${data.questions.length} câu hỏi`,
+        title: t("analysisSuccess", { count: data.questions.length }),
       })
     } catch (error) {
+      console.error("Lỗi xử lý câu hỏi:", error)
       toast({
-        title: "Lỗi",
-        description: "Không thể xử lý câu hỏi. Vui lòng thử lại.",
+        title: error instanceof Error ? error.message : t("processingError"),
         variant: "destructive",
       })
     } finally {
@@ -147,28 +194,25 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Tạo <span className="text-blue-600">Trắc Nghiệm Thông Minh</span> với AI
+              <span className="text-primary">{t("heroTitle")}</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Chuyển đổi văn bản thành bài kiểm tra trắc nghiệm chỉ trong vài giây với công nghệ AI tiên tiến. Tiết kiệm
-              thời gian và nâng cao hiệu quả học tập.
-            </p>
+            <p className="text-xl text-gray-600 mb-8">{t("heroDescription")}</p>
             <div className="flex flex-wrap justify-center gap-4 mb-8">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Miễn phí 100%</span>
+                <span>{t("freeBadge")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-amber-500" />
-                <span>Phân tích tức thì</span>
+                <span>{t("instantBadge")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-blue-500" />
-                <span>Học hiệu quả</span>
+                <span>{t("effectiveBadge")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-purple-500" />
-                <span>10,000+ người dùng</span>
+                <span>{t("usersBadge")}</span>
               </div>
             </div>
           </div>
@@ -181,50 +225,42 @@ export default function HomePage() {
           <Card className="mb-8 shadow-lg border-t-4 border-t-blue-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
-                <Brain className="h-6 w-6 text-blue-600" />
-                Tạo Trắc Nghiệm Thông Minh
+                <Brain className="h-6 w-6 text-primary" />
+                {t("createQuizTitle")}
               </CardTitle>
-              <CardDescription className="text-base">
-                Dán văn bản chứa câu hỏi trắc nghiệm hoặc tải lên file .txt. Hệ thống sẽ tự động phân tích và bổ sung
-                thông tin thiếu.
-              </CardDescription>
+              <CardDescription className="text-base">{t("createQuizDescription")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Nhập văn bản chứa câu hỏi trắc nghiệm:</label>
-                <Textarea
-                  placeholder="Ví dụ:
-Câu 1: Thủ đô của Nhật Bản là gì?
-A. Seoul
-B. Tokyo  
-C. Bắc Kinh
-D. Bangkok
-Đáp án đúng: B
+                <label className="text-sm font-medium">{t("inputLabel")}</label>
+               <Textarea
+  placeholder={`Ví dụ:\nCâu 1: Thủ đô của Nhật Bản là gì?\nA. Seoul\nB. Tokyo\nC. Bắc Kinh\nD. Bangkok\nĐáp án đúng: B\n\nCâu 2: 2 + 2 bằng mấy?\nA. 3\nB. 4\nC. 5\nD. 6\nĐáp án đúng: B`}
+  value={inputText}
+  onChange={(e) => setInputText(e.target.value)}
+  className="min-h-[200px] whitespace-pre-wrap"
+/>
 
-Câu 2: 2 + 2 bằng mấy?
-A. 3
-B. 4
-C. 5
-D. 6
-Đáp án đúng: B"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  className="min-h-[200px]"
-                />
               </div>
 
               <div className="flex items-center gap-4">
                 <div className="flex-1">
-                  <label className="text-sm font-medium">Hoặc tải lên file .txt:</label>
+                  <label className="text-sm font-medium">{t("uploadLabel")}</label>
                   <div className="mt-1">
-                    <input type="file" accept=".txt" onChange={handleFileUpload} className="hidden" id="file-upload" />
+                    <input
+                      type="file"
+                      accept=".txt,.docx,.doc"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      id="file-upload"
+                    />
                     <label
                       htmlFor="file-upload"
-                      className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                      className="inline-flex items-center gap-2 px-4 py-2 border border-input rounded-md shadow-sm text-sm font-medium bg-background hover:bg-accent hover:text-accent-foreground cursor-pointer"
                     >
                       <Upload className="h-4 w-4" />
-                      Chọn file
+                      {t("chooseFile")}
                     </label>
+                    <span className="ml-2 text-xs text-gray-500">(.txt, .docx, .doc)</span>
                   </div>
                 </div>
               </div>
@@ -238,12 +274,12 @@ D. 6
                 {isProcessing ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Đang xử lý...
+                    {t("processing")}
                   </>
                 ) : (
                   <>
                     <FileText className="h-4 w-4 mr-2" />
-                    Phân tích câu hỏi
+                    {t("analyzeButton")}
                   </>
                 )}
               </Button>
@@ -254,50 +290,50 @@ D. 6
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-amber-500" />
-                Hướng dẫn sử dụng
+                {t("guideTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-lg">Định dạng văn bản:</h4>
-                  <ul className="space-y-2 text-gray-600">
+                  <h4 className="font-semibold text-lg">{t("formatTitle")}</h4>
+                  <ul className="space-y-2">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Mỗi câu hỏi bắt đầu bằng "Câu [số]:"</span>
+                      <span>{t("formatItem1")}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Các lựa chọn: A. B. C. D.</span>
+                      <span>{t("formatItem2")}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Đáp án đúng: "Đáp án đúng: [A/B/C/D]"</span>
+                      <span>{t("formatItem3")}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Nếu thiếu đáp án, AI sẽ tự động bổ sung</span>
+                      <span>{t("formatItem4")}</span>
                     </li>
                   </ul>
                 </div>
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-lg">Tính năng:</h4>
-                  <ul className="space-y-2 text-gray-600">
+                  <h4 className="font-semibold text-lg">{t("featuresTitle")}</h4>
+                  <ul className="space-y-2">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Tự động phát hiện câu hỏi trắc nghiệm</span>
+                      <span>{t("featuresItem1")}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Bổ sung đáp án thiếu bằng AI thông minh</span>
+                      <span>{t("featuresItem2")}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Xem trước và chỉnh sửa câu hỏi</span>
+                      <span>{t("featuresItem3")}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span>Làm bài và xem kết quả chi tiết</span>
+                      <span>{t("featuresItem4")}</span>
                     </li>
                   </ul>
                 </div>

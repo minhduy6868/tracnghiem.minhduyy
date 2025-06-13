@@ -61,6 +61,13 @@ function parseQuestionsIntelligently(text: string) {
         }
       }
 
+      // Đảm bảo các giá trị không phải undefined trước khi làm sạch
+      question = question || ""
+      optionA = optionA || ""
+      optionB = optionB || ""
+      optionC = optionC || ""
+      optionD = optionD || ""
+
       // Làm sạch các lựa chọn
       optionA = cleanOption(optionA)
       optionB = cleanOption(optionB)
@@ -109,12 +116,15 @@ function guessCorrectAnswer(
   question: string,
   options: { A: string; B: string; C: string; D: string },
 ): "A" | "B" | "C" | "D" {
-  const q = question.toLowerCase()
+  // Đảm bảo question không phải undefined
+  const q = question ? question.toLowerCase() : ""
+
+  // Đảm bảo các options không phải undefined
   const opts = {
-    A: options.A.toLowerCase(),
-    B: options.B.toLowerCase(),
-    C: options.C.toLowerCase(),
-    D: options.D.toLowerCase(),
+    A: options.A ? options.A.toLowerCase() : "",
+    B: options.B ? options.B.toLowerCase() : "",
+    C: options.C ? options.C.toLowerCase() : "",
+    D: options.D ? options.D.toLowerCase() : "",
   }
 
   // Một số heuristics đơn giản để đoán đáp án
